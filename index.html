@@ -776,37 +776,60 @@
             }
 
             .menu-scroll-area {
-                padding: 8px;
+                padding: 10px;
             }
 
             .menu-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 6px;
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 8px;
                 padding-bottom: 10px;
             }
 
             .item-btn {
-                border-radius: 8px;
-                min-height: 65px;
-                padding: 6px 4px;
+                border-radius: 10px;
+                min-height: 75px;
+                padding: 8px 6px;
             }
 
             .item-name {
-                font-size: 0.8rem;
-                line-height: 1.2;
-                margin-bottom: 3px;
+                font-size: 0.9rem;
+                line-height: 1.25;
+                margin-bottom: 4px;
             }
 
             .item-price {
-                font-size: 0.75rem;
-                padding: 2px 6px;
+                font-size: 0.8rem;
+                padding: 2px 8px;
             }
 
             .cat-header {
-                font-size: 0.8rem;
-                padding: 3px 5px;
-                margin-top: 8px;
-                margin-bottom: 4px;
+                font-size: 0.9rem;
+                padding: 4px 8px;
+                margin-top: 10px;
+                margin-bottom: 6px;
+            }
+
+            /* フードタブ用 - 小さめのボタン */
+            body.tab-food .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+                gap: 5px;
+            }
+
+            body.tab-food .item-btn {
+                min-height: 55px;
+                padding: 5px 4px;
+                border-radius: 8px;
+            }
+
+            body.tab-food .item-name {
+                font-size: 0.7rem;
+                line-height: 1.15;
+                margin-bottom: 2px;
+            }
+
+            body.tab-food .item-price {
+                font-size: 0.65rem;
+                padding: 1px 5px;
             }
         }
     </style>
@@ -905,10 +928,7 @@
             { name: "皮", price: 90, cat: "cat-yakitori", group: "串焼き" },
             { name: "シロコロ", price: 200, cat: "cat-yakitori", group: "串焼き" },
             { name: "つくね", price: 280, cat: "cat-yakitori", group: "串焼き" },
-            { name: "豚巻きバンネギ", price: 280, cat: "cat-yakitori", group: "串焼き" },
-            { name: "豚巻きレタス", price: 280, cat: "cat-yakitori", group: "串焼き" },
-            { name: "豚巻きトマト", price: 280, cat: "cat-yakitori", group: "串焼き" },
-            { name: "豚巻きアスパラ", price: 280, cat: "cat-yakitori", group: "串焼き" },
+            { name: "豚巻き", price: 280, cat: "cat-yakitori", group: "串焼き" },
             { name: "テッポー", price: 90, cat: "cat-yakitori", group: "串焼き" },
             { name: "ハツ", price: 90, cat: "cat-yakitori", group: "串焼き" },
             { name: "からしハツ", price: 180, cat: "cat-yakitori", group: "串焼き" },
@@ -934,8 +954,8 @@
             { name: "五本盛り", price: 780, cat: "cat-yakitori", group: "串焼き" },
 
             // 即菜・サラダ
-            { name: "新鮮国産野菜のサラダ", price: 680, cat: "cat-sarada", group: "即菜・サラダ" },
-            { name: "タルタルブロッコリー", price: 680, cat: "cat-sarada", group: "即菜・サラダ" },
+            { name: "国産野菜のサラダ", price: 680, cat: "cat-sarada", group: "即菜・サラダ" },
+            { name: "タルタルブロッコリーサラダ", price: 680, cat: "cat-sarada", group: "即菜・サラダ" },
             { name: "ささみアボカドサラダ", price: 680, cat: "cat-sarada", group: "即菜・サラダ" },
             { name: "オニ玉サラダ", price: 580, cat: "cat-sarada", group: "即菜・サラダ" },
             { name: "ピリ辛そぼろ豆腐サラダ", price: 580, cat: "cat-sarada", group: "即菜・サラダ" },
@@ -951,13 +971,13 @@
             { name: "バリバリきゅうり", price: 380, cat: "cat-quick", group: "即菜・サラダ" },
             { name: "ちょいつま", price: 780, cat: "cat-quick", group: "即菜・サラダ" },
 
-            { name: "女帝てる子のぬか漬け", price: 380, cat: "cat-tsukemono", group: "即菜・サラダ" },
-            { name: "セロリ白菜ゆず漬け", price: 380, cat: "cat-tsukemono", group: "即菜・サラダ" },
-            { name: "漬物盛り合わせ", price: 480, cat: "cat-tsukemono", group: "即菜・サラダ" },
+            { name: "ぬか漬け", price: 380, cat: "cat-tsukemono", group: "即菜・サラダ" },
+            { name: "ゆず漬け", price: 380, cat: "cat-tsukemono", group: "即菜・サラダ" },
+            { name: "漬物盛り", price: 480, cat: "cat-tsukemono", group: "即菜・サラダ" },
             { name: "キムチ", price: 300, cat: "cat-tsukemono", group: "即菜・サラダ" },
 
             // 刺身
-            { name: "MIXホルモンまぜ刺", price: 880, cat: "cat-sashimi", group: "刺身" },
+            { name: "MIX", price: 880, cat: "cat-sashimi", group: "刺身" },
             { name: "ガツ刺し", price: 480, cat: "cat-sashimi", group: "刺身" },
             { name: "ガツポン酢", price: 480, cat: "cat-sashimi", group: "刺身" },
             { name: "ガツキムチ", price: 480, cat: "cat-sashimi", group: "刺身" },
@@ -986,18 +1006,18 @@
             { name: "チリポテトデカ盛り", price: 780, cat: "cat-potato", group: "揚げ物" },
 
             // 一品・焼き物
-            { name: "日替わり煮込み", price: 580, cat: "cat-main", group: "一品・焼き物" },
+            { name: "煮込み", price: 580, cat: "cat-main", group: "一品・焼き物" },
             { name: "厚焼き玉子", price: 480, cat: "cat-main", group: "一品・焼き物" },
             { name: "厚焼き玉子TP", price: 100, cat: "cat-main", group: "一品・焼き物" },
 
-            { name: "熟成地鶏の溶岩スモーク", price: 1180, cat: "cat-premium-food", group: "一品・焼き物" },
-            { name: "厚切り牛タンの溶岩焼き", price: 1280, cat: "cat-premium-food", group: "一品・焼き物" },
+            { name: "地鶏スモーク", price: 1180, cat: "cat-premium-food", group: "一品・焼き物" },
+            { name: "牛タン", price: 1280, cat: "cat-premium-food", group: "一品・焼き物" },
 
             // 鍋
-            { name: "青春の塩もつ鍋", price: 980, cat: "cat-nabe", group: "鍋" },
-            { name: "情熱の味噌もつ", price: 1280, cat: "cat-nabe", group: "鍋" },
-            { name: "火吹き辛辛もつ鍋", price: 1480, cat: "cat-nabe", group: "鍋" },
-            { name: "青春の塩ちゃんこ鍋", price: 900, cat: "cat-nabe", group: "鍋" },
+            { name: "塩もつ鍋", price: 980, cat: "cat-nabe", group: "鍋" },
+            { name: "味噌もつ", price: 1280, cat: "cat-nabe", group: "鍋" },
+            { name: "辛もつ鍋", price: 1480, cat: "cat-nabe", group: "鍋" },
+            { name: "塩ちゃんこ鍋", price: 900, cat: "cat-nabe", group: "鍋" },
             { name: "情熱の味噌ちゃんこ鍋", price: 1200, cat: "cat-nabe", group: "鍋" },
             { name: "火吹き辛辛ちゃんこ鍋", price: 1400, cat: "cat-nabe", group: "鍋" },
 
@@ -1032,7 +1052,8 @@
             { name: "熟成地鶏漫喫コース", price: 4880, cat: "cat-nomiho", group: "甘味・コース" },
             { name: "飲み放題2H", price: 1800, cat: "cat-nomiho", group: "甘味・コース" },
             { name: "飲み放題1H延長", price: 900, cat: "cat-nomiho", group: "甘味・コース" },
-            { name: "飲み放題金土日祝", price: 2300, cat: "cat-nomiho", group: "甘味・コース" }
+            { name: "飲み放題金土日祝", price: 2300, cat: "cat-nomiho", group: "甘味・コース" },
+            { name: "飲み放題金土日1H延長", price: 1100, cat: "cat-nomiho", group: "甘味・コース" }
         ];
 
         let currentOrder = []; // Array of objects to handle unique items with same name/price diffs
@@ -1043,6 +1064,10 @@
             document.getElementById('btn-tab-drink').classList.toggle('active', tab === 'drink');
             document.getElementById('btn-tab-food').classList.toggle('active', tab === 'food');
             document.getElementById('sub-nav-food').classList.toggle('active', tab === 'food');
+
+            // ドリンク/フードでスタイルを分けるためのクラス
+            document.body.classList.remove('tab-drink', 'tab-food');
+            document.body.classList.add('tab-' + tab);
 
             const scrollArea = document.getElementById('menu-scroll-area');
             scrollArea.scrollTop = 0;
