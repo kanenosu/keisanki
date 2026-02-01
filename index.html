@@ -216,6 +216,25 @@
             font-weight: bold;
         }
 
+        /* メニューバッジ（注文数表示） */
+        .menu-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff3b30;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
         /* Side Order List */
         .order-sidebar {
             background: var(--sidebar-bg);
@@ -928,7 +947,7 @@
             { name: "皮", price: 90, cat: "cat-yakitori", group: "串焼き" },
             { name: "シロコロ", price: 200, cat: "cat-yakitori", group: "串焼き" },
             { name: "つくね", price: 280, cat: "cat-yakitori", group: "串焼き" },
-            { name: "豚巻き", price: 280, cat: "cat-yakitori", group: "串焼き" },
+            { name: "豚巻き系", price: 280, cat: "cat-yakitori", group: "串焼き" },
             { name: "テッポー", price: 90, cat: "cat-yakitori", group: "串焼き" },
             { name: "ハツ", price: 90, cat: "cat-yakitori", group: "串焼き" },
             { name: "からしハツ", price: 180, cat: "cat-yakitori", group: "串焼き" },
@@ -1021,12 +1040,7 @@
             { name: "情熱の味噌ちゃんこ鍋", price: 1200, cat: "cat-nabe", group: "鍋" },
             { name: "火吹き辛辛ちゃんこ鍋", price: 1400, cat: "cat-nabe", group: "鍋" },
 
-            { name: "トッピングマルチョウ", price: 500, cat: "cat-nabe-top", group: "鍋" },
-            { name: "トッピングつくね", price: 500, cat: "cat-nabe-top", group: "鍋" },
-            { name: "トッピング鶏肉", price: 500, cat: "cat-nabe-top", group: "鍋" },
-            { name: "トッピング豚肉", price: 500, cat: "cat-nabe-top", group: "鍋" },
-            { name: "野菜セット", price: 500, cat: "cat-nabe-top", group: "鍋" },
-            { name: "きのこセット", price: 500, cat: "cat-nabe-top", group: "鍋" },
+            { name: "鍋トッピング", price: 500, cat: "cat-nabe-top", group: "鍋" },
             { name: "追加スープ", price: 300, cat: "cat-nabe-top", group: "鍋" },
             { name: "雑炊セット", price: 600, cat: "cat-nabe-top", group: "鍋" },
             { name: "ラーメンセット", price: 600, cat: "cat-nabe-top", group: "鍋" },
@@ -1082,6 +1096,12 @@
             }
         }
 
+        // アイテムの現在の注文数を取得
+        function getItemQty(name, price) {
+            const item = currentOrder.find(i => i.name === name && i.price === price);
+            return item ? item.qty : 0;
+        }
+
         function renderMenu() {
             const grid = document.getElementById('menu-grid');
             grid.innerHTML = '';
@@ -1100,7 +1120,12 @@
 
                 const btn = document.createElement('button');
                 btn.className = `item-btn ${item.cat}`;
-                btn.innerHTML = `<span class="item-name">${item.name}</span><span class="item-price">¥${item.price.toLocaleString()}</span>`;
+
+                // 注文数バッジを追加
+                const qty = getItemQty(item.name, item.price);
+                const badgeHtml = qty > 0 ? `<span class="menu-badge">${qty}</span>` : '';
+
+                btn.innerHTML = `${badgeHtml}<span class="item-name">${item.name}</span><span class="item-price">¥${item.price.toLocaleString()}</span>`;
                 btn.onclick = () => addItem(item.name, item.price);
                 grid.appendChild(btn);
             });
@@ -1118,6 +1143,7 @@
                 currentOrder.push({ name: name, price: price, qty: 1, isCustom: isCustom });
             }
             renderOrder();
+            renderMenu(); // バッジを更新
         }
 
         function addCustomItem() {
@@ -1142,6 +1168,7 @@
                 currentOrder.splice(index, 1);
             }
             renderOrder();
+            renderMenu(); // バッジを更新
         }
 
         function renderOrder() {
@@ -1195,11 +1222,12 @@
                 sidebar.classList.toggle('expanded');
             });
 
-            // 商品追加時にサイドバーを開く
+            // 商品追加時にサイドバーを開く（横向きのみ）
             const originalAddItem = addItem;
             window.addItem = function (name, price, isCustom = false) {
                 originalAddItem(name, price, isCustom);
-                if (window.innerWidth <= 768) {
+                // 横向きモードのみサイドバーを開く（縦向きでは開かない）
+                if (window.innerWidth <= 768 && window.matchMedia("(orientation: landscape)").matches) {
                     sidebar.classList.add('expanded');
                 }
             };
