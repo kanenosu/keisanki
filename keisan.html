@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Handy - Tax & Custom Edition</title>
+    <style>
+        :root {
+            --bg-color: #edeff2;
+            --sidebar-bg: #ffffff;
+            --header-bg: #1a1a1a;
+
+            /* --- DRINK COLORS --- */
+            --color-beer: #ffcc00;
+            --color-high: #ffa500;
+            --color-hoppy: #d2b48c;
+            --color-sour: #85d7ff;
+            --color-kakuteru: #4da3ff;
+            --color-shochu: #d1b3ff;
+            --color-soft: #b2ffb2;
+            --color-premium: #ffb3b3;
+
+            /* --- FOOD COLORS --- */
+            --color-yakitori: #ffab91;
+            --color-sarada: #a5d6a7;
+            --color-quick: #e6ee9c;
+            --color-tsukemono: #b2dfdb;
+            --color-sashimi: #f48fb1;
+            --color-fish: #80deea;
+            --color-fried: #ffd54f;
+            --color-potato: #fff59d;
+            --color-main: #ffcc80;
+            --color-premium-food: #ff8a65;
+            --color-nabe: #ffab40;
+            --color-nabe-top: #ffe0b2;
+            --color-rice: #fff9c4;
+            --color-noodle: #e0f7fa;
+            --color-dessert: #f8bbd0;
+            --color-nomiho: #d1c4e9;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
+            margin: 0;
+            background: var(--bg-color);
+            user-select: none;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--header-bg);
+            color: #fff;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            flex-shrink: 0;
+        }
+
+        .total-wrapper {
+            text-align: right;
+        }
+
+        .total-label {
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-right: 5px;
+        }
+
+        .total-display {
+            font-size: 2.0rem;
+            font-weight: 900;
+            color: #4cd964;
+        }
+
+        .sub-total-display {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Tabs & Sub-nav */
+        .nav-section {
+            background: #333;
+            flex-shrink: 0;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #444;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: #333;
+            color: #999;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            color: #fff;
+            background: #444;
+            box-shadow: inset 0 -4px 0 #4cd964;
+        }
+
+        .sub-nav {
+            display: none;
+            background: #444;
+            padding: 8px;
+            overflow-x: auto;
+            white-space: nowrap;
+            gap: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .sub-nav.active {
+            display: flex;
+        }
+
+        .sub-nav-btn {
+            padding: 6px 14px;
+            background: #555;
+            color: #eee;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .sub-nav-btn:active {
+            background: #777;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Menu Area */
+        .menu-scroll-area {
+            overflow-y: auto;
+            padding: 15px;
+            scroll-behavior: smooth;
+        }
+
+        .cat-header {
+            width: 100%;
+            grid-column: 1 / -1;
+            padding: 8px 10px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            border-left: 6px solid #666;
+            background: rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #333;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+            align-content: start;
+            padding-bottom: 50px;
+        }
+
+        /* Buttons */
+        .item-btn {
+            border: none;
+            border-radius: 12px;
+            padding: 12px 6px;
+            min-height: 85px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.05s;
+            color: #1a1a1a;
+            position: relative;
+        }
+
+        .item-btn:active {
+            transform: scale(0.96);
+            filter: brightness(0.95);
+        }
+
+        .item-name {
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 6px;
+            text-align: center;
+            line-height: 1.25;
+            word-break: break-all;
+        }
+
+        .item-price {
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        /* Side Order List */
+        .order-sidebar {
+            background: var(--sidebar-bg);
+            border-left: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+
+        .order-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .order-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            align-items: center;
+            padding: 12px 8px;
+            border-bottom: 1px solid #f0f0f0;
+            gap: 8px;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item b {
+            font-size: 0.95rem;
+            line-height: 1.2;
+        }
+
+        .order-item.custom-item b {
+            color: #007aff;
+        }
+
+        .qty-badge {
+            background: #eee;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        .order-price {
+            font-weight: bold;
+            color: #333;
+            min-width: 65px;
+            text-align: right;
+        }
+
+        .controls {
+            padding: 15px;
+            background: #f8f8f8;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Custom Input Styles */
+        .custom-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .custom-input {
+            flex: 1;
+            padding: 12px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: right;
+            font-weight: bold;
+            -moz-appearance: textfield;
+        }
+
+        .custom-input::-webkit-outer-spin-button,
+        .custom-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .custom-add-btn {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 0 15px;
+            height: 48px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .custom-add-btn:active {
+            background: #444;
+        }
+
+        .clear-btn {
+            width: 100%;
+            padding: 18px;
+            background: #ff3b30;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #c41e15;
+            transition: all 0.1s;
+        }
+
+        .clear-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #c41e15;
+        }
+
+        /* Color Mapping Classes */
+        /* Drink */
+        .cat-beer {
+            background-color: var(--color-beer);
+        }
+
+        .cat-high {
+            background-color: var(--color-high);
+        }
+
+        .cat-hoppy {
+            background-color: var(--color-hoppy);
+        }
+
+        .cat-sour {
+            background-color: var(--color-sour);
+        }
+
+        .cat-kakuteru {
+            background-color: var(--color-kakuteru);
+        }
+
+        .cat-shochu {
+            background-color: var(--color-shochu);
+        }
+
+        .cat-soft {
+            background-color: var(--color-soft);
+        }
+
+        .cat-premium {
+            background-color: var(--color-premium);
+        }
+
+        /* Food */
+        .cat-yakitori {
+            background-color: var(--color-yakitori);
+        }
+
+        .cat-sarada {
+            background-color: var(--color-sarada);
+        }
+
+        .cat-quick {
+            background-color: var(--color-quick);
+        }
+
+        .cat-tsukemono {
+            background-color: var(--color-tsukemono);
+        }
+
+        .cat-sashimi {
+            background-color: var(--color-sashimi);
+        }
+
+        .cat-fish {
+            background-color: var(--color-fish);
+        }
+
+        .cat-fried {
+            background-color: var(--color-fried);
+        }
+
+        .cat-potato {
+            background-color: var(--color-potato);
+        }
+
+        .cat-main {
+            background-color: var(--color-main);
+        }
+
+        .cat-premium-food {
+            background-color: var(--color-premium-food);
+        }
+
+        .cat-nabe {
+            background-color: var(--color-nabe);
+        }
+
+        .cat-nabe-top {
+            background-color: var(--color-nabe-top);
+        }
+
+        .cat-rice {
+            background-color: var(--color-rice);
+        }
+
+        .cat-noodle {
+            background-color: var(--color-noodle);
+        }
+
+        .cat-dessert {
+            background-color: var(--color-dessert);
+        }
+
+        .cat-nomiho {
+            background-color: var(--color-nomiho);
+        }
+
+        /* ========================================
+           RESPONSIVE DESIGN
+        ======================================== */
+
+        /* Tablet: 768px以下 */
+        @media screen and (max-width: 768px) {
+            .header {
+                padding: 0 12px;
+                height: 50px;
+            }
+
+            .header>div:first-child {
+                font-size: 1rem;
+            }
+
+            .total-display {
+                font-size: 1.6rem;
+            }
+
+            .total-label {
+                font-size: 0.65rem;
+            }
+
+            .sub-total-display {
+                font-size: 0.7rem;
+            }
+
+            .tab-btn {
+                padding: 12px;
+                font-size: 1rem;
+            }
+
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr auto;
+            }
+
+            .menu-scroll-area {
+                padding: 10px;
+                padding-bottom: 20px;
+            }
+
+            .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 8px;
+            }
+
+            .item-btn {
+                min-height: 70px;
+                padding: 10px 4px;
+                border-radius: 10px;
+            }
+
+            .item-name {
+                font-size: 0.8rem;
+            }
+
+            .item-price {
+                font-size: 0.75rem;
+            }
+
+            .cat-header {
+                font-size: 1rem;
+                padding: 6px 8px;
+                margin-top: 20px;
+            }
+
+            /* サイドバーを下部に配置 */
+            .order-sidebar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                max-height: 45vh;
+                border-left: none;
+                border-top: 2px solid #ccc;
+                box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.15);
+                transform: translateY(calc(100% - 60px));
+                transition: transform 0.3s ease;
+                z-index: 100;
+            }
+
+            .order-sidebar.expanded {
+                transform: translateY(0);
+            }
+
+            .order-sidebar::before {
+                content: '';
+                display: block;
+                width: 40px;
+                height: 4px;
+                background: #ccc;
+                border-radius: 2px;
+                margin: 8px auto;
+                cursor: pointer;
+            }
+
+            .order-list {
+                padding: 8px;
+                max-height: calc(45vh - 140px);
+            }
+
+            .order-item {
+                padding: 10px 6px;
+            }
+
+            .controls {
+                padding: 10px;
+            }
+
+            .custom-row {
+                margin-bottom: 10px;
+            }
+
+            .custom-input {
+                padding: 10px;
+                font-size: 1rem;
+            }
+
+            .custom-add-btn {
+                height: 44px;
+                padding: 0 12px;
+                font-size: 0.9rem;
+            }
+
+            .clear-btn {
+                padding: 14px;
+                font-size: 1.1rem;
+            }
+
+            /* メニューエリアの下部にスペースを追加 */
+            .menu-grid {
+                padding-bottom: 80px;
+            }
+        }
+
+        /* Smartphone: 480px以下 */
+        @media screen and (max-width: 480px) {
+            .header {
+                height: 45px;
+                padding: 0 10px;
+            }
+
+            .header>div:first-child {
+                font-size: 0.9rem;
+            }
+
+            .total-display {
+                font-size: 1.4rem;
+            }
+
+            .tab-btn {
+                padding: 10px;
+                font-size: 0.95rem;
+            }
+
+            .sub-nav {
+                padding: 6px;
+                gap: 6px;
+            }
+
+            .sub-nav-btn {
+                padding: 5px 12px;
+                font-size: 0.8rem;
+            }
+
+            .menu-scroll-area {
+                padding: 8px;
+            }
+
+            .menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+
+            .item-btn {
+                min-height: 65px;
+                padding: 8px 3px;
+                border-radius: 8px;
+            }
+
+            .item-name {
+                font-size: 0.72rem;
+                margin-bottom: 4px;
+            }
+
+            .item-price {
+                font-size: 0.68rem;
+                padding: 2px 6px;
+            }
+
+            .cat-header {
+                font-size: 0.9rem;
+                padding: 5px 8px;
+                margin-top: 15px;
+                margin-bottom: 8px;
+            }
+
+            .order-sidebar {
+                max-height: 50vh;
+            }
+
+            .order-list {
+                max-height: calc(50vh - 130px);
+            }
+
+            .order-item b {
+                font-size: 0.85rem;
+            }
+
+            .qty-badge {
+                padding: 4px 10px;
+                font-size: 0.85rem;
+            }
+
+            .order-price {
+                font-size: 0.9rem;
+                min-width: 55px;
+            }
+
+            .clear-btn {
+                padding: 12px;
+                font-size: 1rem;
+            }
+        }
+
+        /* 横向き対応 - サイドバー常時表示・コンパクト化 */
+        @media screen and (orientation: landscape) {
+            .main-container {
+                grid-template-columns: 1fr 280px;
+            }
+
+            .order-sidebar {
+                position: relative;
+                max-height: none;
+                transform: none;
+                border-top: none;
+                border-left: 1px solid #ccc;
+            }
+
+            .order-sidebar::before {
+                display: none;
+            }
+
+            .order-list {
+                padding: 8px;
+                max-height: none;
+            }
+
+            .order-item {
+                padding: 8px 6px;
+            }
+
+            .order-item b {
+                font-size: 0.85rem;
+            }
+
+            .qty-badge {
+                padding: 3px 8px;
+                font-size: 0.8rem;
+            }
+
+            .order-price {
+                font-size: 0.85rem;
+                min-width: 50px;
+            }
+
+            .controls {
+                padding: 10px;
+            }
+
+            .custom-row {
+                margin-bottom: 8px;
+            }
+
+            .custom-input {
+                padding: 8px;
+                font-size: 0.95rem;
+            }
+
+            .custom-add-btn {
+                height: 38px;
+                padding: 0 10px;
+                font-size: 0.85rem;
+            }
+
+            .clear-btn {
+                padding: 12px;
+                font-size: 1rem;
+            }
+        }
+
+        /* 横向き + 小さい画面 */
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            .header {
+                height: 40px;
+                padding: 0 10px;
+            }
+
+            .header>div:first-child {
+                font-size: 0.85rem;
+            }
+
+            .total-display {
+                font-size: 1.3rem;
+            }
+
+            .tab-btn {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .sub-nav {
+                padding: 4px;
+            }
+
+            .sub-nav-btn {
+                padding: 4px 10px;
+                font-size: 0.75rem;
+            }
+
+            .main-container {
+                grid-template-columns: 1fr 240px;
+            }
+
+            .menu-scroll-area {
+                padding: 8px;
+            }
+
+            .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+                gap: 6px;
+            }
+
+            .item-btn {
+                min-height: 55px;
+                padding: 6px 3px;
+            }
+
+            .item-name {
+                font-size: 0.7rem;
+            }
+
+            .item-price {
+                font-size: 0.65rem;
+            }
+
+            .cat-header {
+                font-size: 0.85rem;
+                padding: 4px 6px;
+                margin-top: 12px;
+                margin-bottom: 6px;
+            }
+
+            .order-item {
+                padding: 6px 4px;
+            }
+
+            .order-item b {
+                font-size: 0.8rem;
+            }
+
+            .clear-btn {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div style="font-weight: 900; letter-spacing: 1px; font-size: 1.2rem;">HANDY POS</div>
+        <div class="total-wrapper">
+            <div class="sub-total-display">税抜 <span id="sub-total-amount">0</span> + 税</div>
+            <div class="total-display"><span class="total-label">税込合計</span>¥<span id="total-amount">0</span></div>
+        </div>
+    </div>
+
+    <div class="nav-section">
+        <div class="tabs">
+            <button class="tab-btn active" id="btn-tab-drink" onclick="switchTab('drink')">ドリンク</button>
+            <button class="tab-btn" id="btn-tab-food" onclick="switchTab('food')">フード</button>
+        </div>
+        <!-- Food Sub Nav -->
+        <div class="sub-nav" id="sub-nav-food">
+            <button class="sub-nav-btn" onclick="scrollToCat('cat-food-串焼き')">串焼き</button>
+            <button class="sub-nav-btn" onclick="scrollToCat('cat-food-即菜・サラダ')">即菜・サラダ</button>
+            <button class="sub-nav-btn" onclick="scrollToCat('cat-food-刺身')">刺身</button>
+            <button class="sub-nav-btn" onclick="scrollToCat('cat-food-揚げ物')">揚げ物</button>
+            <button class="sub-nav-btn" onclick="scrollToCat('cat-food-一品・焼き物')">一品・焼き物</button>
+            <button class="sub-nav-btn" onclick="scrollToCat('cat-food-鍋')">鍋</button>
+            <button class="sub-nav-btn" onclick="scrollToCat('cat-food-ご飯・麺')">ご飯・麺</button>
+            <button class="sub-nav-btn" onclick="scrollToCat('cat-food-甘味・コース')">甘味・コース</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="menu-scroll-area" id="menu-scroll-area">
+            <div class="menu-grid" id="menu-grid"></div>
+        </div>
+
+        <div class="order-sidebar">
+            <div
+                style="padding: 10px; font-weight: bold; border-bottom: 1px solid #ddd; background: #f9f9f9; font-size: 0.8rem; color: #666; text-align: center;">
+                注文内容
+            </div>
+            <div class="order-list" id="order-list"></div>
+
+            <div class="controls">
+                <!-- Custom Price Input -->
+                <div class="custom-row">
+                    <input type="number" id="custom-price" class="custom-input" placeholder="金額" inputmode="numeric">
+                    <button class="custom-add-btn" onclick="addCustomItem()">＋その他</button>
+                </div>
+
+                <button class="clear-btn" onclick="clearAll()">会計確定 / クリア</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TAX_RATE = 0.10; // 消費税10%
+
+        // --- DRINK DATA (Group removed) ---
+        const drinkMenu = [
+            { name: "生ビール", price: 590, cat: "cat-beer" },
+            { name: "ギネス", price: 620, cat: "cat-beer" },
+            { name: "瓶ビール", price: 490, cat: "cat-beer" },
+            { name: "オールフリー", price: 790, cat: "cat-beer" },
+            { name: "ホッピーセット", price: 550, cat: "cat-hoppy" },
+            { name: "中 (なか)", price: 250, cat: "cat-hoppy" },
+            { name: "外 (そと)", price: 280, cat: "cat-hoppy" },
+            { name: "角・陸ハイ", price: 520, cat: "cat-high" },
+            { name: "コークジンハイ", price: 580, cat: "cat-high" },
+            { name: "普通サワー", price: 490, cat: "cat-sour" },
+            { name: "生レモン系", price: 580, cat: "cat-sour" },
+            { name: "GF/トマト", price: 580, cat: "cat-sour" },
+            { name: "カクテル系", price: 580, cat: "cat-kakuteru" },
+            { name: "ワイン", price: 550, cat: "cat-kakuteru" },
+            { name: "翠/ﾋﾞｰﾌｨｰﾀ", price: 580, cat: "cat-kakuteru" },
+            { name: "翠レモン", price: 600, cat: "cat-kakuteru" },
+            { name: "梅酒/ﾗｲﾁ/杏露", price: 580, cat: "cat-shochu" },
+            { name: "特別梅酒", price: 650, cat: "cat-shochu" },
+            { name: "秘蔵/ｺｰﾋｰ/ｶﾞﾘ", price: 600, cat: "cat-shochu" },
+            { name: "普通焼酎", price: 500, cat: "cat-premium" },
+            { name: "神秘/魔王/村尾", price: 800, cat: "cat-premium" },
+            { name: "森伊蔵/十四代", price: 1000, cat: "cat-premium" },
+            { name: "ソフドリ(PET)", price: 350, cat: "cat-soft" },
+            { name: "ソフドリ他/GF", price: 400, cat: "cat-soft" }
+        ];
+
+        // --- FOOD DATA ---
+        const foodMenu = [
+            // お通し
+            { name: "お通し", price: 300, cat: "cat-quick", group: "お通し" },
+
+            // 串焼き (cat-yakitori)
+            { name: "アミレバー", price: 180, cat: "cat-yakitori", group: "串焼き" },
+            { name: "皮", price: 90, cat: "cat-yakitori", group: "串焼き" },
+            { name: "シロコロ", price: 200, cat: "cat-yakitori", group: "串焼き" },
+            { name: "つくね", price: 280, cat: "cat-yakitori", group: "串焼き" },
+            { name: "豚巻きバンネギ", price: 280, cat: "cat-yakitori", group: "串焼き" },
+            { name: "豚巻きレタス", price: 280, cat: "cat-yakitori", group: "串焼き" },
+            { name: "豚巻きトマト", price: 280, cat: "cat-yakitori", group: "串焼き" },
+            { name: "豚巻きアスパラ", price: 280, cat: "cat-yakitori", group: "串焼き" },
+            { name: "テッポー", price: 90, cat: "cat-yakitori", group: "串焼き" },
+            { name: "ハツ", price: 90, cat: "cat-yakitori", group: "串焼き" },
+            { name: "からしハツ", price: 180, cat: "cat-yakitori", group: "串焼き" },
+            { name: "ねぎま", price: 180, cat: "cat-yakitori", group: "串焼き" },
+            { name: "ぼんじり", price: 180, cat: "cat-yakitori", group: "串焼き" },
+            { name: "豚カルビ", price: 250, cat: "cat-yakitori", group: "串焼き" },
+            { name: "ハツモト", price: 180, cat: "cat-yakitori", group: "串焼き" },
+            { name: "せせり", price: 180, cat: "cat-yakitori", group: "串焼き" },
+            { name: "ささみ", price: 180, cat: "cat-yakitori", group: "串焼き" },
+            { name: "手羽先", price: 250, cat: "cat-yakitori", group: "串焼き" },
+            { name: "ぶりぶり丸チョウ", price: 250, cat: "cat-yakitori", group: "串焼き" },
+            { name: "しいたけ", price: 180, cat: "cat-yakitori", group: "串焼き" },
+            { name: "エリンギ", price: 180, cat: "cat-yakitori", group: "串焼き" },
+            { name: "ししとう", price: 180, cat: "cat-yakitori", group: "串焼き" },
+            { name: "アボカド", price: 250, cat: "cat-yakitori", group: "串焼き" },
+            { name: "アスパラ(250)", price: 250, cat: "cat-yakitori", group: "串焼き" },
+            { name: "厚揚げ", price: 200, cat: "cat-yakitori", group: "串焼き" },
+            { name: "マッシュルーム", price: 250, cat: "cat-yakitori", group: "串焼き" },
+            { name: "銀杏", price: 200, cat: "cat-yakitori", group: "串焼き" },
+            { name: "皮付き長芋", price: 200, cat: "cat-yakitori", group: "串焼き" },
+            { name: "ナス", price: 200, cat: "cat-yakitori", group: "串焼き" },
+            { name: "アスパラ(200)", price: 200, cat: "cat-yakitori", group: "串焼き" },
+            { name: "五本盛り", price: 780, cat: "cat-yakitori", group: "串焼き" },
+
+            // 即菜・サラダ
+            { name: "新鮮国産野菜のサラダ", price: 680, cat: "cat-sarada", group: "即菜・サラダ" },
+            { name: "タルタルブロッコリー", price: 680, cat: "cat-sarada", group: "即菜・サラダ" },
+            { name: "ささみアボカドサラダ", price: 680, cat: "cat-sarada", group: "即菜・サラダ" },
+            { name: "オニ玉サラダ", price: 580, cat: "cat-sarada", group: "即菜・サラダ" },
+            { name: "ピリ辛そぼろ豆腐サラダ", price: 580, cat: "cat-sarada", group: "即菜・サラダ" },
+            { name: "万喜風ゴマサラダ", price: 680, cat: "cat-sarada", group: "即菜・サラダ" },
+            { name: "チョレギサラダ", price: 680, cat: "cat-sarada", group: "即菜・サラダ" },
+
+            { name: "冷やっこ", price: 300, cat: "cat-quick", group: "即菜・サラダ" },
+            { name: "マキ卵", price: 300, cat: "cat-quick", group: "即菜・サラダ" },
+            { name: "冷トマト", price: 380, cat: "cat-quick", group: "即菜・サラダ" },
+            { name: "明太マヨささみ", price: 480, cat: "cat-quick", group: "即菜・サラダ" },
+            { name: "チャンジャ", price: 480, cat: "cat-quick", group: "即菜・サラダ" },
+            { name: "バリバリキャベツ", price: 380, cat: "cat-quick", group: "即菜・サラダ" },
+            { name: "バリバリきゅうり", price: 380, cat: "cat-quick", group: "即菜・サラダ" },
+            { name: "ちょいつま", price: 780, cat: "cat-quick", group: "即菜・サラダ" },
+
+            { name: "女帝てる子のぬか漬け", price: 380, cat: "cat-tsukemono", group: "即菜・サラダ" },
+            { name: "セロリ白菜ゆず漬け", price: 380, cat: "cat-tsukemono", group: "即菜・サラダ" },
+            { name: "漬物盛り合わせ", price: 480, cat: "cat-tsukemono", group: "即菜・サラダ" },
+            { name: "キムチ", price: 300, cat: "cat-tsukemono", group: "即菜・サラダ" },
+
+            // 刺身
+            { name: "MIXホルモンまぜ刺", price: 880, cat: "cat-sashimi", group: "刺身" },
+            { name: "ガツ刺し", price: 480, cat: "cat-sashimi", group: "刺身" },
+            { name: "ガツポン酢", price: 480, cat: "cat-sashimi", group: "刺身" },
+            { name: "ガツキムチ", price: 480, cat: "cat-sashimi", group: "刺身" },
+            { name: "青唐コブクロ", price: 480, cat: "cat-sashimi", group: "刺身" },
+
+            { name: "ホタテの刺身", price: 680, cat: "cat-fish", group: "刺身" },
+            { name: "ホタテの磯辺焼き", price: 380, cat: "cat-fish", group: "刺身" },
+            { name: "鯨のお刺身", price: 780, cat: "cat-fish", group: "刺身" },
+
+            // 揚げ物
+            { name: "唐揚げ4ピース", price: 680, cat: "cat-fried", group: "揚げ物" },
+            { name: "唐揚げ5ピース", price: 780, cat: "cat-fried", group: "揚げ物" },
+            { name: "唐揚げ6ピース", price: 880, cat: "cat-fried", group: "揚げ物" },
+            { name: "自家製タルタルチキン南蛮", price: 780, cat: "cat-fried", group: "揚げ物" },
+            { name: "レッチリ1ピース", price: 280, cat: "cat-fried", group: "揚げ物" },
+            { name: "レッチリ4ピース", price: 650, cat: "cat-fried", group: "揚げ物" },
+            { name: "レッチリ5ピース", price: 850, cat: "cat-fried", group: "揚げ物" },
+            { name: "レッチリ6ピース", price: 950, cat: "cat-fried", group: "揚げ物" },
+            { name: "手羽先素揚げ4ピース", price: 700, cat: "cat-fried", group: "揚げ物" },
+            { name: "手羽先素揚げ5ピース", price: 800, cat: "cat-fried", group: "揚げ物" },
+            { name: "手羽先素揚げ6ピース", price: 900, cat: "cat-fried", group: "揚げ物" },
+
+            { name: "フライドポテト", price: 480, cat: "cat-potato", group: "揚げ物" },
+            { name: "ポテトデカ盛り", price: 680, cat: "cat-potato", group: "揚げ物" },
+            { name: "チリポテト", price: 580, cat: "cat-potato", group: "揚げ物" },
+            { name: "チリポテトデカ盛り", price: 780, cat: "cat-potato", group: "揚げ物" },
+
+            // 一品・焼き物
+            { name: "日替わり煮込み", price: 580, cat: "cat-main", group: "一品・焼き物" },
+            { name: "厚焼き玉子", price: 480, cat: "cat-main", group: "一品・焼き物" },
+            { name: "厚焼き玉子TP", price: 100, cat: "cat-main", group: "一品・焼き物" },
+
+            { name: "熟成地鶏の溶岩スモーク", price: 1180, cat: "cat-premium-food", group: "一品・焼き物" },
+            { name: "厚切り牛タンの溶岩焼き", price: 1280, cat: "cat-premium-food", group: "一品・焼き物" },
+
+            // 鍋
+            { name: "青春の塩もつ鍋", price: 980, cat: "cat-nabe", group: "鍋" },
+            { name: "情熱の味噌もつ", price: 1280, cat: "cat-nabe", group: "鍋" },
+            { name: "火吹き辛辛もつ鍋", price: 1480, cat: "cat-nabe", group: "鍋" },
+            { name: "青春の塩ちゃんこ鍋", price: 900, cat: "cat-nabe", group: "鍋" },
+            { name: "情熱の味噌ちゃんこ鍋", price: 1200, cat: "cat-nabe", group: "鍋" },
+            { name: "火吹き辛辛ちゃんこ鍋", price: 1400, cat: "cat-nabe", group: "鍋" },
+
+            { name: "トッピングマルチョウ", price: 500, cat: "cat-nabe-top", group: "鍋" },
+            { name: "トッピングつくね", price: 500, cat: "cat-nabe-top", group: "鍋" },
+            { name: "トッピング鶏肉", price: 500, cat: "cat-nabe-top", group: "鍋" },
+            { name: "トッピング豚肉", price: 500, cat: "cat-nabe-top", group: "鍋" },
+            { name: "野菜セット", price: 500, cat: "cat-nabe-top", group: "鍋" },
+            { name: "きのこセット", price: 500, cat: "cat-nabe-top", group: "鍋" },
+            { name: "追加スープ", price: 300, cat: "cat-nabe-top", group: "鍋" },
+            { name: "雑炊セット", price: 600, cat: "cat-nabe-top", group: "鍋" },
+            { name: "ラーメンセット", price: 600, cat: "cat-nabe-top", group: "鍋" },
+            { name: "チーズリゾット", price: 700, cat: "cat-nabe-top", group: "鍋" },
+
+            // ご飯・麺
+            { name: "そぼろ丼", price: 680, cat: "cat-rice", group: "ご飯・麺" },
+            { name: "TKG", price: 580, cat: "cat-rice", group: "ご飯・麺" },
+            { name: "鶏飯", price: 800, cat: "cat-rice", group: "ご飯・麺" },
+            { name: "キーマカレー", price: 880, cat: "cat-rice", group: "ご飯・麺" },
+            { name: "チーズキーマカレー", price: 950, cat: "cat-rice", group: "ご飯・麺" },
+
+            { name: "白湯スープ", price: 300, cat: "cat-noodle", group: "ご飯・麺" },
+            { name: "白湯ラーメン", price: 800, cat: "cat-noodle", group: "ご飯・麺" },
+
+            // 甘味・コース
+            { name: "ふわとろはちみつチーズ", price: 780, cat: "cat-dessert", group: "甘味・コース" },
+            { name: "バニラアイス", price: 280, cat: "cat-dessert", group: "甘味・コース" },
+            { name: "ハニーバター", price: 680, cat: "cat-dessert", group: "甘味・コース" },
+            { name: "大人のアフォガード", price: 680, cat: "cat-dessert", group: "甘味・コース" },
+
+            { name: "ビールセット", price: 500, cat: "cat-nomiho", group: "甘味・コース" },
+            { name: "熟成地鶏漫喫コース", price: 4880, cat: "cat-nomiho", group: "甘味・コース" },
+            { name: "飲み放題2H", price: 1800, cat: "cat-nomiho", group: "甘味・コース" },
+            { name: "飲み放題1H延長", price: 900, cat: "cat-nomiho", group: "甘味・コース" },
+            { name: "飲み放題金土日祝", price: 2300, cat: "cat-nomiho", group: "甘味・コース" }
+        ];
+
+        let currentOrder = []; // Array of objects to handle unique items with same name/price diffs
+        let currentTab = 'drink';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('btn-tab-drink').classList.toggle('active', tab === 'drink');
+            document.getElementById('btn-tab-food').classList.toggle('active', tab === 'food');
+            document.getElementById('sub-nav-food').classList.toggle('active', tab === 'food');
+
+            const scrollArea = document.getElementById('menu-scroll-area');
+            scrollArea.scrollTop = 0;
+
+            renderMenu();
+        }
+
+        function scrollToCat(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        }
+
+        function renderMenu() {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = '';
+            const data = currentTab === 'drink' ? drinkMenu : foodMenu;
+
+            let lastGroup = "";
+            data.forEach(item => {
+                if (item.group && item.group !== lastGroup) {
+                    const header = document.createElement('div');
+                    header.className = 'cat-header';
+                    header.id = `cat-${currentTab}-${item.group}`;
+                    header.innerText = item.group;
+                    grid.appendChild(header);
+                    lastGroup = item.group;
+                }
+
+                const btn = document.createElement('button');
+                btn.className = `item-btn ${item.cat}`;
+                btn.innerHTML = `<span class="item-name">${item.name}</span><span class="item-price">¥${item.price.toLocaleString()}</span>`;
+                btn.onclick = () => addItem(item.name, item.price);
+                grid.appendChild(btn);
+            });
+        }
+
+        // 注文管理ロジック修正: 配列で管理して重複をカウント
+        function addItem(name, price, isCustom = false) {
+            // 既存アイテムを探す
+            // カスタムアイテムの場合は、価格も一致する必要がある
+            const existingItem = currentOrder.find(item => item.name === name && item.price === price && item.isCustom === isCustom);
+
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                currentOrder.push({ name: name, price: price, qty: 1, isCustom: isCustom });
+            }
+            renderOrder();
+        }
+
+        function addCustomItem() {
+            const input = document.getElementById('custom-price');
+            const price = parseInt(input.value);
+
+            if (isNaN(price) || price === 0) {
+                alert('金額を入力してください');
+                return;
+            }
+
+            const name = "その他・調整";
+            addItem(name, price, true);
+            input.value = ''; // Reset input
+        }
+
+        function removeItem(index) {
+            const item = currentOrder[index];
+            if (item.qty > 1) {
+                item.qty--;
+            } else {
+                currentOrder.splice(index, 1);
+            }
+            renderOrder();
+        }
+
+        function renderOrder() {
+            const list = document.getElementById('order-list');
+            const subTotalDisp = document.getElementById('sub-total-amount');
+            const totalDisp = document.getElementById('total-amount');
+
+            list.innerHTML = '';
+            let subTotal = 0;
+
+            currentOrder.forEach((item, index) => {
+                const itemSubTotal = item.price * item.qty;
+                subTotal += itemSubTotal;
+
+                const div = document.createElement('div');
+                div.className = `order-item ${item.isCustom ? 'custom-item' : ''}`;
+                div.innerHTML = `<b>${item.name}</b><span class="qty-badge">x ${item.qty}</span><span class="order-price">¥${itemSubTotal.toLocaleString()}</span>`;
+                div.onclick = () => removeItem(index);
+                list.appendChild(div);
+            });
+
+            // Tax Calculation
+            const tax = Math.floor(subTotal * TAX_RATE);
+            const total = subTotal + tax;
+
+            subTotalDisp.innerText = subTotal.toLocaleString();
+            totalDisp.innerText = total.toLocaleString();
+        }
+
+        function clearAll() {
+            if (currentOrder.length === 0) return;
+            if (confirm('会計を確定し、リストをリセットしますか？')) {
+                currentOrder = [];
+                renderOrder();
+            }
+        }
+
+        switchTab('drink');
+
+        // モバイル対応: サイドバーのタップ開閉
+        function setupMobileSidebar() {
+            const sidebar = document.querySelector('.order-sidebar');
+            if (!sidebar) return;
+
+            // タップで開閉
+            sidebar.addEventListener('click', function (e) {
+                // コントロール部分のクリックは除外
+                if (e.target.closest('.controls') || e.target.closest('.order-list')) {
+                    return;
+                }
+                sidebar.classList.toggle('expanded');
+            });
+
+            // 商品追加時にサイドバーを開く
+            const originalAddItem = addItem;
+            window.addItem = function (name, price, isCustom = false) {
+                originalAddItem(name, price, isCustom);
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.add('expanded');
+                }
+            };
+        }
+
+        // ページ読み込み時に初期化
+        setupMobileSidebar();
+    </script>
+</body>
+
+</html>
