@@ -473,12 +473,16 @@
 
             .menu-scroll-area {
                 padding: 10px;
-                padding-bottom: 20px;
+                padding-bottom: 80px;
+                /* サイドバーが閉じている時の高さ分の余白 */
+                margin-bottom: 60px;
             }
 
             .menu-grid {
                 grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
                 gap: 8px;
+                /* 下部に十分な余白を確保 */
+                padding-bottom: 100px;
             }
 
             .item-btn {
@@ -562,11 +566,6 @@
             .clear-btn {
                 padding: 14px;
                 font-size: 1.1rem;
-            }
-
-            /* メニューエリアの下部にスペースを追加 */
-            .menu-grid {
-                padding-bottom: 80px;
             }
         }
 
@@ -672,6 +671,9 @@
                 transform: none;
                 border-top: none;
                 border-left: 1px solid #ccc;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
             }
 
             .order-sidebar::before {
@@ -680,7 +682,9 @@
 
             .order-list {
                 padding: 8px;
-                max-height: none;
+                flex: 1;
+                overflow-y: auto;
+                min-height: 0;
             }
 
             .order-item {
@@ -703,6 +707,7 @@
 
             .controls {
                 padding: 10px;
+                flex-shrink: 0;
             }
 
             .custom-row {
