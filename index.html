@@ -660,16 +660,42 @@
             }
         }
 
-        /* 横向き対応 - サイドバー常時表示・ビューポート高さ固定 */
+        /* 横向き対応 - サイドバー常時表示・コンパクト */
         @media screen and (orientation: landscape) {
             body {
                 overflow: hidden;
+                height: 100dvh;
+            }
+
+            .header {
+                height: 36px;
+                padding: 0 10px;
+            }
+
+            .header>div:first-child {
+                font-size: 0.9rem;
+            }
+
+            .total-display {
+                font-size: 1.2rem;
+            }
+
+            .sub-total-display {
+                font-size: 0.65rem;
+            }
+
+            .tab-btn {
+                padding: 6px;
+                font-size: 0.85rem;
+            }
+
+            .sub-nav {
+                display: none !important;
             }
 
             .main-container {
-                grid-template-columns: 1fr 280px;
-                height: calc(100vh - 60px - 48px);
-                /* ビューポート - ヘッダー - タブ */
+                grid-template-columns: 1fr 240px;
+                height: calc(100dvh - 36px - 32px);
                 overflow: hidden;
             }
 
@@ -689,137 +715,98 @@
                 display: none;
             }
 
-            /* 注文内容ヘッダー */
             .order-sidebar>div:first-child {
-                flex-shrink: 0;
+                display: none;
             }
 
             .order-list {
-                padding: 8px;
+                padding: 4px;
                 flex: 1;
                 overflow-y: auto;
                 min-height: 0;
             }
 
             .order-item {
-                padding: 8px 6px;
+                padding: 4px;
+                border-bottom: 1px dotted #eee;
             }
 
             .order-item b {
-                font-size: 0.85rem;
+                font-size: 0.75rem;
             }
 
             .qty-badge {
-                padding: 3px 8px;
-                font-size: 0.8rem;
+                padding: 2px 5px;
+                font-size: 0.7rem;
             }
 
             .order-price {
-                font-size: 0.85rem;
-                min-width: 50px;
+                font-size: 0.75rem;
+                min-width: 40px;
             }
 
             .controls {
-                padding: 10px;
+                padding: 5px;
                 flex-shrink: 0;
                 background: #f8f8f8;
                 border-top: 1px solid #ddd;
             }
 
             .custom-row {
-                margin-bottom: 8px;
+                margin-bottom: 4px;
+                gap: 4px;
             }
 
             .custom-input {
-                padding: 8px;
-                font-size: 0.95rem;
+                padding: 4px;
+                font-size: 0.85rem;
+                height: 28px;
             }
 
             .custom-add-btn {
-                height: 38px;
-                padding: 0 10px;
-                font-size: 0.85rem;
-            }
-
-            .clear-btn {
-                padding: 12px;
-                font-size: 1rem;
-            }
-        }
-
-        /* 横向き + 小さい画面 */
-        @media screen and (max-height: 500px) and (orientation: landscape) {
-            .header {
-                height: 40px;
-                padding: 0 10px;
-            }
-
-            .header>div:first-child {
-                font-size: 0.85rem;
-            }
-
-            .total-display {
-                font-size: 1.3rem;
-            }
-
-            .tab-btn {
-                padding: 8px;
-                font-size: 0.9rem;
-            }
-
-            .sub-nav {
-                padding: 4px;
-            }
-
-            .sub-nav-btn {
-                padding: 4px 10px;
+                height: 28px;
+                padding: 0 6px;
                 font-size: 0.75rem;
             }
 
-            .main-container {
-                grid-template-columns: 1fr 240px;
+            .clear-btn {
+                padding: 5px;
+                font-size: 0.85rem;
+                height: 32px;
             }
 
             .menu-scroll-area {
-                padding: 8px;
+                padding: 5px;
             }
 
             .menu-grid {
-                grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
-                gap: 6px;
+                grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+                gap: 4px;
+                padding-bottom: 10px;
             }
 
             .item-btn {
-                min-height: 55px;
-                padding: 6px 3px;
+                border-radius: 6px;
+                min-height: 50px;
+                padding: 3px;
             }
 
             .item-name {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
+                line-height: 1.1;
+                margin-bottom: 2px;
             }
 
             .item-price {
-                font-size: 0.65rem;
+                font-size: 0.6rem;
+                padding: 1px 3px;
             }
 
             .cat-header {
-                font-size: 0.85rem;
-                padding: 4px 6px;
-                margin-top: 12px;
-                margin-bottom: 6px;
-            }
-
-            .order-item {
-                padding: 6px 4px;
-            }
-
-            .order-item b {
                 font-size: 0.8rem;
-            }
-
-            .clear-btn {
-                padding: 10px;
-                font-size: 0.9rem;
+                padding: 3px 5px;
+                margin-top: 8px;
+                margin-bottom: 4px;
             }
         }
     </style>
