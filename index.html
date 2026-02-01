@@ -1094,8 +1094,11 @@
 
         function scrollToCat(id) {
             const el = document.getElementById(id);
-            if (el) {
-                el.scrollIntoView({ behavior: "smooth", block: "start" });
+            const scrollArea = document.getElementById('menu-scroll-area');
+            if (el && scrollArea) {
+                // メニューエリア内でのみスクロール
+                const offsetTop = el.offsetTop - scrollArea.offsetTop;
+                scrollArea.scrollTo({ top: offsetTop, behavior: 'smooth' });
             }
         }
 
